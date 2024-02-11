@@ -1,0 +1,130 @@
+// TASK 3 - TIC-TAC-TOE GAME
+
+// Build a simple console-based Tic-Tac-Toe game that allows two players to play against each other
+// Game Board: Create a 3x3 grid as the game board. Players: Assign "X" and "O" to two players. Display
+// Board: Show the current state of the board. Player Input: Prompt the current player to enter their move.
+// Update Board: Update the game board with the player s move. Check for Win: Check if the current player
+// has won. Check for Draw: Determine if the game is a draw. Switch Players: Alternate turns between "X"
+// and "O" Players. Display Result: Show the result of the game (win, draw, or ongoing). Play Again: Ask if the
+// players want to play another game.
+
+
+#include <iostream>
+#include <vector>
+
+const int BOARD_SIZE = 3;
+
+using namespace std;
+
+// Function to create an empty board
+vector<vector<char>> createBoard() {
+  vector<vector<char>> board(BOARD_SIZE, vector<char>(BOARD_SIZE, ' '));
+  return board;
+}
+
+// Function to display the board
+void displayBoard(const vector<vector<char>>& board) {
+  for (int i = 0; i < BOARD_SIZE; ++i) {
+    for (int j = 0; j < BOARD_SIZE; ++j) {
+      cout << board[i][j] << " ";
+    }
+    cout << endl;
+  }
+}
+
+// Function to check if a move is valid
+bool isValidMove(const vector<vector<char>>& board, int row, int col) {
+  return 0 <= row && row < BOARD_SIZE && 0 <= col && col < BOARD_SIZE && board[row][col] == ' ';
+}
+
+// Function to make a move on the board
+void makeMove(vector<vector<char>>& board, char player, int row, int col) {
+  board[row][col] = player;
+}
+
+// Function to check if a player has won
+bool hasWon(const vector<vector<char>>& board, char player) {
+  // Check rows and columns
+  for (int i = 0; i < BOARD_SIZE; ++i) {
+    if (board[i][0] == player && board[i][1] == player && board[i][2] == player) {
+      return true;
+    }
+    if (board[0][i] == player && board[1][i] == player && board[2][i] == player) {
+      return true;
+    }
+  }
+
+  // Check diagonals
+  if (board[0][0] == player && board[1][1] == player && board[2][2] == player) {
+    return true;
+  }
+  if (board[0][2] == player && board[1][1] == player && board[2][0] == player) {
+    return true;
+  }
+
+  return false;
+}
+
+// Function to check if the game is a draw
+bool isDraw(const vector<vector<char>>& board) {
+  for (int i = 0; i < BOARD_SIZE; ++i) {
+    for (int j = 0; j < BOARD_SIZE; ++j) {
+      if (board[i][j] == ' ') {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+// Function to switch players
+char switchPlayer(char player) {
+  return player == 'X' ? 'O' : 'X';
+}
+
+// Main function to run the game
+int main() {
+  vector<vector<char>> board = createBoard();
+  char player = 'X';
+
+  while (true) {
+    displayBoard(board);
+
+    int row, col;
+    cout << player << "'s turn, enter row and column: ";
+    cin >> row >> col;
+
+    if (!isValidMove(board, row - 1, col - 1)) {
+      cout << "Invalid move. Please try again." << endl;
+      continue;
+    }
+
+    makeMove(board, player, row - 1, col - 1);
+
+    if (hasWon(board, player)) {
+      displayBoard(board);
+      cout << player << " wins!" << endl;
+      break;
+    }
+
+    if (isDraw(board)) {
+      displayBoard(board);
+      cout << "It's a draw!" << endl;
+      break;
+    }
+
+    player = switchPlayer(player);
+  }
+
+  char answer;
+  cout << "Play again? (y/n): ";
+  cin >> answer;
+
+  if (answer == 'y') {
+    main();
+  } else {
+    cout << "Thanks for playing!" << endl;
+  }
+
+  return 0;
+}
